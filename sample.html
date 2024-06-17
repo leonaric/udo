@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <style>
+        *{
+            position: relative;
+            margin: 0;
+            padding: 0;
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+        }
+        body{
+            width: 100vw;
+            height: 100vh;
+            background-color: rgb(23, 23, 23);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .main{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            flex-direction: column;
+        }
+        .inputs{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            border-radius: 10px;
+            flex-direction: column;
+        }
+        .inputs .input{
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            border-radius: 10px;
+        }
+        p{
+            font-size: 14px;
+            text-align: right;
+            margin-right: 10px;
+            color: rgb(204, 229, 255);
+            width: 40%;
+        }
+        input{
+            width: 40%;
+            height: fit-content;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: -1px -1px 10px rgba(0, 0, 0, 0.5);
+            font-size: 14px;
+        }
+        .connect{
+            width: fit-content;
+            height: fit-content;
+            display: flex;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 5px;
+            margin-right: calc(40% - 50px);
+        }
+        .connect p{
+            width: 40px;
+            height: 30px;
+            background-color: rgba(255, 112, 112, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            margin-right: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: padding 0.5s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+        }
+        .connect p[active="true"]{
+            margin: 0;
+            margin-left: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            background-color: rgba(105, 251, 166, 0.3);
+        }
+    </style>
+    <div class="main">
+        <div class="pywebview-drag-region">
+            <div class="actions">
+                <p class="minimize" onclick="pywebview.api.minimize()"></p>
+                <p class="close" onclick="pywebview.api.close()"></p>
+            </div>
+        </div>
+        <div class="inputs">
+            <div class="input">
+                <p>Username :</p>
+                <input type="text" placeholder="eg. McKenny" spellcheck="false">
+            </div>
+            <div class="input">
+                <p>Authentication key :</p>
+                <input type="text" placeholder="eg. QujTcqMML89nn" spellcheck="false">
+            </div>
+            <div class="input">
+                <p>Click to connect :</p>
+                <div class="connect"><p active="tru"></p></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let connect = document.querySelector(".connect");
+    let connectP = document.querySelector(".connect p");
+    let inputs = document.querySelectorAll("input");
+    connect.addEventListener("click",()=>{
+        if(connectP.hasAttribute("active") && inputs[0].value.length > 0 && inputs[1].value.length > 0) {
+            let request = pywebview.api.disconnect();
+            request.then((response)=>{
+                if (response == "Done") {
+                    connectP.removeAttribute("active");
+                }else{
+                    console.log("Internal error");
+                };
+            });
+        }else if(!connectP.hasAttribute("active")){
+            let request = pywebview.api.connectVpn(inputs[1].value);
+            request.then((response)=>{
+                if (response == "Connected") {
+                    connectP.setAttribute("active", "true");
+                }else if(response == "Failed"){
+                    connectP.setAttribute("active", "true");
+                    setTimeout(()=>{
+                        connectP.removeAttribute("active");
+                    }, 800);
+                    console.log("Internal error");
+                };
+            });
+        };
+    });
+</script>
+</html>

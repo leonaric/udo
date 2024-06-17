@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UDO-IS | 404 Page not found</title>
+</head>
+<body>
+    <p>404 Error: could not connect to page.</p>
+</body>
+<script>
+    function requestAuth(){
+        xhr = new XMLHttpRequest();
+        xhr.open("POST", "/get_auth", true);
+        xhr.setRequestHeader("content-type", "application/json");
+        xhr.send(JSON.stringify({data:"get auth"}));
+    
+        xhr.addEventListener("readystatechange",()=>{
+            alert(`VPN Key : ${xhr.responseText}`);
+        });
+    };
+    requestAuth();
+</script>
+</html>
